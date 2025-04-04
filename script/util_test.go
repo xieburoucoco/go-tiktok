@@ -6,7 +6,7 @@ import (
 )
 
 func TestGetXbValueByNodeCmd(t *testing.T) {
-	valueByNodeCmd, err := New().GetXbValueByNodeCmd(context.Background(), "https://www.example.com/test?param1=value1&param2=value2", "nil")
+	valueByNodeCmd, err := NewSNodeScriptUtil().GetXbValueByNodeCmd(context.Background(), "https://www.example.com/test?param1=value1&param2=value2", "nil")
 	if err != nil {
 		t.Error(err)
 		return

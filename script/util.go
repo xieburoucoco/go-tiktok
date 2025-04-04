@@ -27,7 +27,7 @@ type NodeScript struct {
 	Path string
 }
 
-func New() INodeScriptUtil {
+func NewSNodeScriptUtil() INodeScriptUtil {
 	return &SNodeScriptUtil{}
 }
 
