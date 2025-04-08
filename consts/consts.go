@@ -15,10 +15,13 @@ const (
 
 const (
 	HOME                        = "https://www.tiktok.com"
-	BROWSER_VERSION             = "5.0 (Windows NT 10.0; Win64; x64)"
+	API_ENDPOINT                = HOME + "/api/"
+	BROWSER_VERSION             = "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 	USER_AGENT_KEY              = "user-agent"
-	USER_AGENT_DEFAULT_VALUE    = "Mozilla/" + BROWSER_VERSION + " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+	USER_AGENT_DEFAULT_VALUE    = "Mozilla/" + BROWSER_VERSION
 	TIKTOK_HOME_EXTRACT_PATTERN = `<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__" type="application/json">(.*?)</script>`
+	XBOGUS                      = "X-Bogus"
+	MSTOKEN                     = "msToken"
 )
 
 func GetBaseHeaders() map[string]string {
@@ -44,28 +47,19 @@ func GetBaseParams() map[string]string {
 	return map[string]string{
 		"aid":              "1988",
 		"app_name":         "tiktok_web",
-		"browser_language": "en-US",
+		"browser_language": "zh-CN",
 		"browser_name":     "Mozilla",
 		"browser_online":   "true",
 		"browser_platform": "Win32",
 		"browser_version":  BROWSER_VERSION,
-		"channel":          "tiktok_web",
 		"cookie_enabled":   "true",
 		"device_id":        "7106080012156032519",
 		"device_platform":  "web_pc",
-		"focus_state":      "true",
-		"from_page":        "user",
-		"history_len":      "1",
-		"is_fullscreen":    "false",
-		"is_page_visible":  "true",
 		"os":               "windows",
-		"priority_region":  "",
-		"referer":          HOME,
 		"region":           "US",
 		"screen_height":    "1080",
 		"screen_width":     "1920",
 		"tz_name":          "Asia/Shanghai",
-		"webcast_language": "en",
 	}
 
 }

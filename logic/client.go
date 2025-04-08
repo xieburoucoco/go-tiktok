@@ -1,4 +1,4 @@
-package cli
+package logic
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"go-tiktok/consts"
 	"go-tiktok/script"
-	"strings"
+	"net/url"
 )
 
 type TikTokOption struct {
@@ -15,13 +15,13 @@ type TikTokOption struct {
 	URL     string
 	Params  map[string]interface{}
 	Body    interface{}
-	Model   *interface{}
+	Model   interface{}
 	MsToken string
 	Proxy   string
 }
 
 type ITikTokCli interface {
-	Do(ctx context.Context) (*resty.Response, []byte, error)
+	Do(ctx context.Context) (*resty.Response, error)
 	BuildURL(updateParams map[string]interface{}) error
 	Unmarshal(body []byte, m interface{}) error
 	UnmarshalHomeResponse(ctx context.Context, body []byte) (HomeJson, error)
@@ -39,8 +39,6 @@ func NewITikTokCli(s *STikTokCli) ITikTokCli {
 
 func NewSTikTokCli(options TikTokOption) *STikTokCli {
 	cli := resty.New()
-	cli.SetHeaders(consts.GetBaseHeaders()).
-		SetQueryParams(consts.GetBaseParams())
 	return &STikTokCli{
 		client:  cli,
 		req:     cli.R(),
@@ -48,9 +46,14 @@ func NewSTikTokCli(options TikTokOption) *STikTokCli {
 	}
 }
 
-func (s *STikTokCli) Do(ctx context.Context) (*resty.Response, []byte, error) {
+func (s *STikTokCli) Do(ctx context.Context) (*resty.Response, error) {
 	var resp *resty.Response
 	var err error
+	s.client.SetHeaders(consts.GetBaseHeaders())
+	queryParams := consts.GetBaseParams()
+	for k, v := range queryParams {
+		s.options.Params[k] = v
+	}
 	ua := s.client.Header.Get(consts.USER_AGENT_KEY)
 	if len(ua) == 0 {
 		panic("User-Agent is empty")
@@ -64,29 +67,22 @@ func (s *STikTokCli) Do(ctx context.Context) (*resty.Response, []byte, error) {
 	if len(s.options.Proxy) != 0 {
 		s.client.SetProxy(s.options.Proxy)
 	}
-	if len(s.options.MsToken) == 0 {
-		panic("MsToken is empty")
-	}
-	s.options.Params["msToken"] = s.options.MsToken
-	if err = s.BuildURL(nil); err != nil {
-		return resp, nil, err
-	}
+	s.options.Params[consts.MSTOKEN] = s.options.MsToken
+	err = s.BuildURL(nil)
 	xbValue, err := script.NewSNodeScriptUtil().GetXbValueByNodeCmd(ctx, s.options.URL, ua)
 	if err != nil {
-		return resp, nil, err
+		return resp, err
 	}
-	err = s.BuildURL(map[string]interface{}{
-		"X-Bogus": xbValue,
-	})
+	s.options.URL += "&" + consts.XBOGUS + "=" + xbValue
 	switch s.options.Method {
 	case consts.GET:
-		resp, err = s.req.Get(s.options.URL)
+		resp, err = s.client.R().Get(s.options.URL)
 	case consts.POST:
 		resp, err = s.req.Post(s.options.URL)
 	default:
-		return resp, nil, fmt.Errorf("invalid HTTP method: %s", s.options.Method)
+		return resp, fmt.Errorf("invalid HTTP method: %s", s.options.Method)
 	}
-	return resp, nil, err
+	return resp, err
 }
 
 func (s *STikTokCli) Unmarshal(body []byte, m interface{}) error {
@@ -95,24 +91,41 @@ func (s *STikTokCli) Unmarshal(body []byte, m interface{}) error {
 }
 
 func (s *STikTokCli) BuildURL(updateParams map[string]interface{}) error {
-	if !strings.HasSuffix(s.options.URL, "?") {
-		s.options.URL = s.options.URL + "?"
+	baseURL := s.options.URL
+
+	// 解析基础URL
+	u, err := url.Parse(baseURL)
+	if err != nil {
+		return fmt.Errorf("解析URL失败: %v", err)
 	}
-	flg := true
-	current := func(p1 map[string]interface{}, p2 map[string]interface{}) map[string]interface{} {
-		if len(p1) == 0 {
-			return s.options.Params
-		} else {
-			return p2
-		}
-	}(updateParams, s.options.Params)
-	for k, v := range current { // todo
-		if flg {
-			flg = false
-		} else {
-			s.options.URL += "&"
-		}
-		s.options.URL += fmt.Sprintf("%s=%s", k, v)
+
+	// 获取现有查询参数（如果有）
+	existingParams := u.Query()
+
+	// 如果没有初始Params，初始化
+	if s.options.Params == nil {
+		s.options.Params = make(map[string]interface{})
 	}
+
+	// 如果有updateParams，更新到s.options.Params中
+	if updateParams != nil {
+		for k, v := range updateParams {
+			s.options.Params[k] = v
+		}
+	}
+
+	// 将所有参数合并到查询参数中
+	for k, v := range s.options.Params {
+		existingParams.Set(k, fmt.Sprintf("%v", v))
+	}
+
+	// 设置编码后的查询字符串
+	u.RawQuery = existingParams.Encode()
+
+	// 更新URL
+	s.options.URL = u.String()
+
+	// 调试输出
+	//fmt.Println("更新后的URL:", s.options.URL)
 	return nil
 }
