@@ -14,14 +14,13 @@ const (
 )
 
 const (
-	HOME                        = "https://www.tiktok.com"
-	API_ENDPOINT                = HOME + "/api/"
-	BROWSER_VERSION             = "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
-	USER_AGENT_KEY              = "user-agent"
-	USER_AGENT_DEFAULT_VALUE    = "Mozilla/" + BROWSER_VERSION
-	TIKTOK_HOME_EXTRACT_PATTERN = `<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__" type="application/json">(.*?)</script>`
-	XBOGUS                      = "X-Bogus"
-	MSTOKEN                     = "msToken"
+	HOME                     = "https://www.tiktok.com"
+	API_ENDPOINT             = HOME + "/api/"
+	BROWSER_VERSION          = "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+	USER_AGENT_KEY           = "user-agent"
+	USER_AGENT_DEFAULT_VALUE = "Mozilla/" + BROWSER_VERSION
+	XBOGUS                   = "X-Bogus"
+	MSTOKEN                  = "msToken"
 )
 
 func GetBaseHeaders() map[string]string {

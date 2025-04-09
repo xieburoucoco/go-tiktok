@@ -21,9 +21,9 @@ func GetMusicItemListlParams(musicId string, cursor string) map[string]interface
 	return params
 }
 
-func BuildMusicItemListlEndpoint(musicId string, cursor string) (consts.HTTPMethodType, string, map[string]interface{}, MusicItemListlRes, error) {
+func BuildMusicItemListlEndpoint(musicId string, cursor string) (consts.HTTPMethodType, string, map[string]interface{}, map[string]interface{}, MusicItemListlRes, error) {
 	res := MusicItemListlRes{}
-	return MUSIC_ITEM_LIST_METHOD, GetMusicItemListlRoute(), GetMusicItemListlParams(musicId, cursor), res, nil
+	return MUSIC_ITEM_LIST_METHOD, GetMusicItemListlRoute(), GetMusicItemListlParams(musicId, cursor), make(map[string]interface{}), res, nil
 }
 
 type MusicItemListlRes struct {

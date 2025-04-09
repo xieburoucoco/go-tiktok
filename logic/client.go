@@ -7,6 +7,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"go-tiktok/consts"
 	"go-tiktok/script"
+	"net/http"
 	"net/url"
 )
 
@@ -14,6 +15,7 @@ type TikTokOption struct {
 	Method  consts.HTTPMethodType
 	URL     string
 	Params  map[string]interface{}
+	Cookies map[string]interface{}
 	Body    interface{}
 	Model   interface{}
 	MsToken string
@@ -24,7 +26,6 @@ type ITikTokCli interface {
 	Do(ctx context.Context) (*resty.Response, error)
 	BuildURL(updateParams map[string]interface{}) error
 	Unmarshal(body []byte, m interface{}) error
-	UnmarshalHomeResponse(ctx context.Context, body []byte) (HomeJson, error)
 }
 
 type STikTokCli struct {
@@ -55,6 +56,12 @@ func (s *STikTokCli) Do(ctx context.Context) (*resty.Response, error) {
 		s.options.Params[k] = v
 	}
 	ua := s.client.Header.Get(consts.USER_AGENT_KEY)
+	for k, v := range s.options.Cookies {
+		s.client.SetCookie(&http.Cookie{
+			Name:  k,
+			Value: fmt.Sprintf("%v", v),
+		})
+	}
 	if len(ua) == 0 {
 		panic("User-Agent is empty")
 	}

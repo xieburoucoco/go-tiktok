@@ -17,9 +17,9 @@ func GetItemDetailParams(itemId string) map[string]interface{} {
 	return params
 }
 
-func BuildItemDetailEndpoint(itemId string) (consts.HTTPMethodType, string, map[string]interface{}, ItemDetailRes, error) {
+func BuildItemDetailEndpoint(itemId string) (consts.HTTPMethodType, string, map[string]interface{}, map[string]interface{}, ItemDetailRes, error) {
 	res := ItemDetailRes{}
-	return ITEM_DETAIL_METHOD, GetItemDetailRoute(), GetItemDetailParams(itemId), res, nil
+	return ITEM_DETAIL_METHOD, GetItemDetailRoute(), GetItemDetailParams(itemId), make(map[string]interface{}), res, nil
 }
 
 type ItemDetailRes struct {

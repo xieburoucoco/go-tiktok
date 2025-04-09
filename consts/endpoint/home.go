@@ -1,7 +1,6 @@
-package logic
+package endpoint
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/kaptinlin/jsonrepair"
@@ -9,11 +8,25 @@ import (
 	"regexp"
 )
 
-func (s *STikTokCli) UnmarshalHomeResponse(ctx context.Context, body []byte) (HomeJson, error) {
-	res := HomeJson{}
-	matchArr := regexp.MustCompile(consts.TIKTOK_HOME_EXTRACT_PATTERN).FindAllStringSubmatch(string(body), -1)
+const (
+	TIKTOK_HOME_EXTRACT_PATTERN = `<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__" type="application/json">(.*?)</script>`
+	HOME_METHOD                 = consts.GET
+)
+
+func GetHomeRoute(uniqueId string) string {
+	return consts.HOME + "/@" + uniqueId
+}
+
+func BuildHomeEndpoint(uniqueId string) (consts.HTTPMethodType, string, HomeRes, error) {
+	res := HomeRes{}
+	return HOME_METHOD, GetHomeRoute(uniqueId), res, nil
+}
+
+func UnmarshalHomeResponse(body []byte) (HomeRes, error) {
+	res := HomeRes{}
+	matchArr := regexp.MustCompile(TIKTOK_HOME_EXTRACT_PATTERN).FindAllStringSubmatch(string(body), -1)
 	if len(matchArr) == 0 {
-		return res, fmt.Errorf("No matching string was found, parsing failed")
+		return res, fmt.Errorf("no matching string was found, parsing failed")
 	}
 	matchStr := matchArr[0][1]
 	repair, err := jsonrepair.JSONRepair(matchStr)
@@ -24,7 +37,7 @@ func (s *STikTokCli) UnmarshalHomeResponse(ctx context.Context, body []byte) (Ho
 	return res, err
 }
 
-type HomeJson struct {
+type HomeRes struct {
 	Default struct {
 		WebAppContext struct {
 			Language string `json:"language"`
