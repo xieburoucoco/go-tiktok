@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-resty/resty/v2"
-	"go-tiktok/consts"
-	"go-tiktok/consts/endpoint"
+	"github.com/xieburoucoco/go-tiktok/consts"
+	"github.com/xieburoucoco/go-tiktok/consts/endpoint"
 )
 
 type TypeName string

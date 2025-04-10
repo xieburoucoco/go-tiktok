@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-resty/resty/v2"
-	"go-tiktok/consts"
-	"go-tiktok/script"
+	"github.com/xieburoucoco/go-tiktok/consts"
+	"github.com/xieburoucoco/go-tiktok/script"
 	"net/http"
 	"net/url"
 )
@@ -24,7 +24,7 @@ type TikTokOption struct {
 
 type ITikTokCli interface {
 	Do(ctx context.Context) (*resty.Response, error)
-	BuildURL(updateParams map[string]interface{}) error
+	BuildURL(updateParams map[string]interface{}) (*url.URL, error)
 	Unmarshal(body []byte, m interface{}) error
 }
 
@@ -75,12 +75,24 @@ func (s *STikTokCli) Do(ctx context.Context) (*resty.Response, error) {
 		s.client.SetProxy(s.options.Proxy)
 	}
 	s.options.Params[consts.MSTOKEN] = s.options.MsToken
-	err = s.BuildURL(nil)
+	//if ok := s.options.Params[consts.MSTOKEN]; ok != nil {
+	//	s.client.SetCookie(&http.Cookie{
+	//		Name:  consts.MSTOKEN,
+	//		Value: fmt.Sprintf("%v", s.options.MsToken),
+	//	})
+	//}
+	u, err := s.BuildURL(nil)
+	if err != nil {
+		return nil, err
+	}
 	xbValue, err := script.NewSNodeScriptUtil().GetXbValueByNodeCmd(ctx, s.options.URL, ua)
 	if err != nil {
 		return resp, err
 	}
-	s.options.URL += "&" + consts.XBOGUS + "=" + xbValue
+	u.Query().Set(consts.XBOGUS, xbValue)
+	u.RawQuery = u.Query().Encode()
+	s.options.URL = u.String()
+	//s.options.URL += "&" + consts.XBOGUS + "=" + xbValue
 	switch s.options.Method {
 	case consts.GET:
 		resp, err = s.client.R().Get(s.options.URL)
@@ -97,13 +109,13 @@ func (s *STikTokCli) Unmarshal(body []byte, m interface{}) error {
 	return err
 }
 
-func (s *STikTokCli) BuildURL(updateParams map[string]interface{}) error {
+func (s *STikTokCli) BuildURL(updateParams map[string]interface{}) (*url.URL, error) {
 	baseURL := s.options.URL
 
 	// 解析基础URL
 	u, err := url.Parse(baseURL)
 	if err != nil {
-		return fmt.Errorf("解析URL失败: %v", err)
+		return u, fmt.Errorf("解析URL失败: %v", err)
 	}
 
 	// 获取现有查询参数（如果有）
@@ -134,5 +146,5 @@ func (s *STikTokCli) BuildURL(updateParams map[string]interface{}) error {
 
 	// 调试输出
 	//fmt.Println("更新后的URL:", s.options.URL)
-	return nil
+	return u, nil
 }

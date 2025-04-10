@@ -1,4 +1,4 @@
-module go-tiktok
+module github.com/xieburoucoco/go-tiktok
 
 go 1.23.2
 

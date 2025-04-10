@@ -2,7 +2,7 @@ package endpoint
 
 import (
 	"fmt"
-	"go-tiktok/consts"
+	"github.com/xieburoucoco/go-tiktok/consts"
 )
 
 const (

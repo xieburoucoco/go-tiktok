@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kaptinlin/jsonrepair"
-	"go-tiktok/consts"
+	"github.com/xieburoucoco/go-tiktok/consts"
 	"regexp"
 )
 
@@ -22,19 +22,19 @@ func BuildHomeEndpoint(uniqueId string) (consts.HTTPMethodType, string, HomeRes,
 	return HOME_METHOD, GetHomeRoute(uniqueId), res, nil
 }
 
-func UnmarshalHomeResponse(body []byte) (HomeRes, error) {
+func UnmarshalHomeResponse(body []byte) ([]byte, HomeRes, error) {
 	res := HomeRes{}
 	matchArr := regexp.MustCompile(TIKTOK_HOME_EXTRACT_PATTERN).FindAllStringSubmatch(string(body), -1)
 	if len(matchArr) == 0 {
-		return res, fmt.Errorf("no matching string was found, parsing failed")
+		return nil, res, fmt.Errorf("no matching string was found, parsing failed")
 	}
 	matchStr := matchArr[0][1]
 	repair, err := jsonrepair.JSONRepair(matchStr)
 	if err != nil {
-		return res, err
+		return nil, res, err
 	}
 	err = json.Unmarshal([]byte(repair), &res)
-	return res, err
+	return []byte(repair), res, err
 }
 
 type HomeRes struct {

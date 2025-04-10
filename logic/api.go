@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/go-resty/resty/v2"
-	"go-tiktok/consts"
-	"go-tiktok/consts/endpoint"
+	"github.com/xieburoucoco/go-tiktok/consts"
+	"github.com/xieburoucoco/go-tiktok/consts/endpoint"
 )
 
 type ITikTokAPI interface {
@@ -86,6 +86,6 @@ func (s *STikTokAPI) Home(ctx context.Context, uniqueId string, proxyURL string)
 		return response, responseBody, res, err
 	}
 	responseBody = response.Body()
-	res, err = endpoint.UnmarshalHomeResponse(responseBody)
-	return response, responseBody, res, err
+	body, res, err := endpoint.UnmarshalHomeResponse(responseBody)
+	return response, body, res, err
 }

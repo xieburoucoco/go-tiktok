@@ -1,6 +1,6 @@
 package endpoint
 
-import "go-tiktok/consts"
+import "github.com/xieburoucoco/go-tiktok/consts"
 
 const (
 	ITEM_DETAIL_ENDPOINT_NAME = "ItemDetail"

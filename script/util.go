@@ -5,7 +5,7 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
-	"go-tiktok/consts"
+	"github.com/xieburoucoco/go-tiktok/consts"
 	"os"
 	"os/exec"
 	"path/filepath"
