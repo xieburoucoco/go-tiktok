@@ -36,7 +36,7 @@ func (s *ParamAdapter) GetEndpointRequestData(ctx context.Context, typeName Type
 	case UserListTypeName:
 		httpMethod, route, params, cookies, model, err = endpoint.BuildUserListEndpoint(args[0].(endpoint.SceneType), args[1].(string), args[2].(string), args[3].(string))
 	case MusicItemListTypeName:
-		httpMethod, route, params, cookies, model, err = endpoint.BuildMusicItemListlEndpoint(args[0].(string), args[1].(string))
+		httpMethod, route, params, cookies, model, err = endpoint.BuildMusicItemListEndpoint(args[0].(string), args[1].(string))
 	default:
 		return httpMethod, route, params, cookies, model, fmt.Errorf("unsupported type name: %s", typeName)
 	}

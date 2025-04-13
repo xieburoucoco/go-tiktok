@@ -3,6 +3,8 @@ package endpoint
 import (
 	"fmt"
 	"github.com/xieburoucoco/go-tiktok/consts"
+	"net/url"
+	"strings"
 )
 
 const (
@@ -21,6 +23,56 @@ func GetUserListRoute() string {
 	return consts.API_ENDPOINT + "user/list/"
 }
 
+func BuildUserListRoute() string {
+	buildUrl := GetUserListRoute() + "?"
+	startUrl := buildUrl
+	addAndConcatParam := func(key string, value string) {
+		if buildUrl != startUrl {
+			buildUrl += "&"
+		}
+		escapedValue := strings.ReplaceAll(url.QueryEscape(value), "+", "%20")
+		//escapedValue := url.QueryEscape(value)
+		buildUrl += fmt.Sprintf("%s=%s", key, escapedValue)
+	}
+	addAndConcatParam("WebIdLastTime", "1738896054")
+	addAndConcatParam("aid", "1988")
+	addAndConcatParam("app_language", "zh-Hans")
+	addAndConcatParam("app_name", "tiktok_web")
+	addAndConcatParam("browser_language", "zh-CN")
+	addAndConcatParam("browser_name", "Mozilla")
+	addAndConcatParam("browser_online", "true")
+	addAndConcatParam("browser_platform", "Win32")
+	addAndConcatParam("browser_version", consts.BROWSER_VERSION)
+	addAndConcatParam("channel", "tiktok_web")
+	addAndConcatParam("cookie_enabled", "true")
+
+	addAndConcatParam("count", "30")
+	addAndConcatParam("data_collection_enabled", "true")
+
+	addAndConcatParam("device_id", "7468501464287299079")
+	addAndConcatParam("device_platform", "web_pc")
+	addAndConcatParam("focus_state", "false")
+	addAndConcatParam("from_page", "user")
+	addAndConcatParam("history_len", "4")
+	addAndConcatParam("is_fullscreen", "false")
+	addAndConcatParam("is_page_visible", "true")
+
+	addAndConcatParam("maxCursor", "0")
+	addAndConcatParam("minCursor", "1744521427")
+
+	addAndConcatParam("os", "windows")
+	addAndConcatParam("priority_region", "")
+	addAndConcatParam("referer", "")
+	addAndConcatParam("region", "US")
+	addAndConcatParam("scene", "67")
+	addAndConcatParam("screen_height", "1152")
+	addAndConcatParam("screen_width", "2048")
+	addAndConcatParam("secUid", "MS4wLjABAAAADWVixuGqt-G8FDQ9yx9TLQD-4fFpwQtBhXe6EDCJ32wiprPkgzEzdGCjCR1PEwmf")
+	addAndConcatParam("tz_name", "Asia/Shanghai")
+	addAndConcatParam("webcast_language", "zh-Hans")
+	return buildUrl
+}
+
 func GetUserListParams(scene SceneType, secUid, maxCursor, minCursor string) (map[string]interface{}, error) {
 	params := make(map[string]interface{})
 	if len(secUid) == 0 {
@@ -32,11 +84,11 @@ func GetUserListParams(scene SceneType, secUid, maxCursor, minCursor string) (ma
 	if len(minCursor) == 0 {
 		minCursor = "0"
 	}
-	params["scene"] = scene
-	params["secUid"] = secUid
-	params["count"] = 30
-	params["maxCursor"] = maxCursor
-	params["minCursor"] = minCursor
+	//params["scene"] = scene
+	//params["secUid"] = secUid
+	//params["count"] = "30"
+	//params["maxCursor"] = maxCursor
+	//params["minCursor"] = minCursor
 	return params, nil
 }
 
@@ -47,7 +99,7 @@ func BuildUserListEndpoint(scene SceneType, secUid, maxCursor, minCursor string)
 	if err != nil {
 		return USER_LIST_METHOD, GetUserListRoute(), params, cookies, res, err
 	}
-	return USER_LIST_METHOD, GetUserListRoute(), params, cookies, res, nil
+	return USER_LIST_METHOD, BuildUserListRoute(), params, cookies, res, nil
 }
 
 type UserListRes struct {

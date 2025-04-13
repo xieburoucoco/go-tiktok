@@ -569,7 +569,8 @@ const url = args[0]; // 第一个参数为 url
 const userAgent = args[1]; // 第二个参数为 userAgent
 
 if (url && userAgent) {
-    const result = sign(url, userAgent); // 调用 sign 函数
+    const query = new URL(url).searchParams.toString();
+    const result = sign(query, userAgent); // 调用 sign 函数
     console.log(result); // 输出结果
 } else {
     console.error("Error: Please provide both url and userAgent as arguments.");

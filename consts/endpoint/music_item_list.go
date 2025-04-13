@@ -1,17 +1,50 @@
 package endpoint
 
-import "github.com/xieburoucoco/go-tiktok/consts"
+import (
+	"fmt"
+	"github.com/xieburoucoco/go-tiktok/consts"
+	"net/url"
+)
 
 const (
 	MUSIC_ITEM_LIST_ENDPOINT_NAME = "musicItemList"
 	MUSIC_ITEM_LIST_METHOD        = consts.GET
 )
 
-func GetMusicItemListlRoute() string {
+func GetMusicItemListRoute() string {
 	return consts.API_ENDPOINT + "music/item_list/"
 }
 
-func GetMusicItemListlParams(musicId string, cursor string) map[string]interface{} {
+func BuildMusicItemListRoute() string {
+	buildUrl := GetMusicItemListRoute() + "?"
+	startUrl := buildUrl
+	addAndConcatParam := func(key string, value string) {
+		if buildUrl != startUrl {
+			buildUrl += "&"
+		}
+		//escapedValue := strings.ReplaceAll(url.QueryEscape(value), "+", "%20")
+		escapedValue := url.QueryEscape(value)
+		buildUrl += fmt.Sprintf("%s=%s", key, escapedValue)
+	}
+	addAndConcatParam("aid", "1988")
+	addAndConcatParam("app_name", "tiktok_web")
+	addAndConcatParam("browser_language", "zh-CN")
+	addAndConcatParam("browser_name", "Mozilla")
+	addAndConcatParam("browser_online", "true")
+	addAndConcatParam("browser_platform", "Win32")
+	addAndConcatParam("browser_version", "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
+	addAndConcatParam("cookie_enabled", "true")
+	addAndConcatParam("device_id", "7419900769212581419")
+	addAndConcatParam("device_platform", "web_pc")
+	addAndConcatParam("os", "windows")
+	addAndConcatParam("region", "US")
+	addAndConcatParam("screen_height", "1080")
+	addAndConcatParam("screen_width", "1920")
+	addAndConcatParam("tz_name", "Asia/Shanghai")
+	return buildUrl
+}
+
+func GetMusicItemListParams(musicId string, cursor string) map[string]interface{} {
 	params := make(map[string]interface{})
 	params["musicID"] = musicId
 	params["cursor"] = cursor
@@ -21,9 +54,9 @@ func GetMusicItemListlParams(musicId string, cursor string) map[string]interface
 	return params
 }
 
-func BuildMusicItemListlEndpoint(musicId string, cursor string) (consts.HTTPMethodType, string, map[string]interface{}, map[string]interface{}, MusicItemListlRes, error) {
+func BuildMusicItemListEndpoint(musicId string, cursor string) (consts.HTTPMethodType, string, map[string]interface{}, map[string]interface{}, MusicItemListlRes, error) {
 	res := MusicItemListlRes{}
-	return MUSIC_ITEM_LIST_METHOD, GetMusicItemListlRoute(), GetMusicItemListlParams(musicId, cursor), make(map[string]interface{}), res, nil
+	return MUSIC_ITEM_LIST_METHOD, BuildMusicItemListRoute(), GetMusicItemListParams(musicId, cursor), make(map[string]interface{}), res, nil
 }
 
 type MusicItemListlRes struct {

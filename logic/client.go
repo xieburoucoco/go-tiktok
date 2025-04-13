@@ -51,11 +51,12 @@ func (s *STikTokCli) Do(ctx context.Context) (*resty.Response, error) {
 	var resp *resty.Response
 	var err error
 	s.client.SetHeaders(consts.GetBaseHeaders())
-	queryParams := consts.GetBaseParams()
-	for k, v := range queryParams {
-		s.options.Params[k] = v
-	}
-	ua := s.client.Header.Get(consts.USER_AGENT_KEY)
+	//queryParams := consts.GetBaseParams()
+	//for k, v := range queryParams {
+	//	s.options.Params[k] = v
+	//}
+	//ua := s.client.Header.Get(consts.USER_AGENT_KEY)
+	ua := consts.USER_AGENT_DEFAULT_VALUE
 	for k, v := range s.options.Cookies {
 		s.client.SetCookie(&http.Cookie{
 			Name:  k,
@@ -74,25 +75,30 @@ func (s *STikTokCli) Do(ctx context.Context) (*resty.Response, error) {
 	if len(s.options.Proxy) != 0 {
 		s.client.SetProxy(s.options.Proxy)
 	}
-	s.options.Params[consts.MSTOKEN] = s.options.MsToken
+	//s.options.Params[consts.MSTOKEN] = s.options.MsToken
 	//if ok := s.options.Params[consts.MSTOKEN]; ok != nil {
 	//	s.client.SetCookie(&http.Cookie{
 	//		Name:  consts.MSTOKEN,
 	//		Value: fmt.Sprintf("%v", s.options.MsToken),
 	//	})
 	//}
-	u, err := s.BuildURL(nil)
-	if err != nil {
+	//_, err = s.BuildURL(nil)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//s.options.URL += "&" + consts.MSTOKEN + "=" + s.options.MsToken
+	//xbValue, err := script.NewSNodeScriptUtil().GetXbValueByNodeCmd(ctx, s.options.URL, ua)
+	//if err != nil {
+	//	return resp, err
+	//}
+	//s.options.URL += "&" + consts.XBOGUS + "=" + xbValue
+	//s.BuildBaseRoute(ua)
+	s.BuildParamRoute()
+	s.BuildMsTokenRoute(s.options.MsToken)
+	if err = s.BuildXBogusRoute(ctx, ua); err != nil {
 		return nil, err
 	}
-	xbValue, err := script.NewSNodeScriptUtil().GetXbValueByNodeCmd(ctx, s.options.URL, ua)
-	if err != nil {
-		return resp, err
-	}
-	u.Query().Set(consts.XBOGUS, xbValue)
-	u.RawQuery = u.Query().Encode()
-	s.options.URL = u.String()
-	//s.options.URL += "&" + consts.XBOGUS + "=" + xbValue
+	fmt.Println(s.options.URL)
 	switch s.options.Method {
 	case consts.GET:
 		resp, err = s.client.R().Get(s.options.URL)
@@ -147,4 +153,24 @@ func (s *STikTokCli) BuildURL(updateParams map[string]interface{}) (*url.URL, er
 	// 调试输出
 	//fmt.Println("更新后的URL:", s.options.URL)
 	return u, nil
+}
+
+func (s *STikTokCli) BuildParamRoute() {
+	for k, v := range s.options.Params {
+		s.options.URL += fmt.Sprintf("&%s=%s", k, url.QueryEscape(fmt.Sprintf("%v", v)))
+	}
+}
+
+func (s *STikTokCli) BuildMsTokenRoute(msToken string) {
+	//s.options.URL += fmt.Sprintf("&%s=%s", consts.MSTOKEN, url.QueryEscape(fmt.Sprintf("%v", msToken)))
+	s.options.URL += fmt.Sprintf("&%s=%s", consts.MSTOKEN, msToken)
+}
+
+func (s *STikTokCli) BuildXBogusRoute(ctx context.Context, ua string) error {
+	xbValue, err := script.NewSNodeScriptUtil().GetXbValueByNodeCmd(ctx, s.options.URL, ua)
+	if err != nil {
+		return err
+	}
+	s.options.URL += fmt.Sprintf("&%s=%s", consts.XBOGUS, url.QueryEscape(fmt.Sprintf("%v", xbValue)))
+	return nil
 }

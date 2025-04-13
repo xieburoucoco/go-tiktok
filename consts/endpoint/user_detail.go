@@ -1,6 +1,10 @@
 package endpoint
 
-import "github.com/xieburoucoco/go-tiktok/consts"
+import (
+	"fmt"
+	"github.com/xieburoucoco/go-tiktok/consts"
+	"net/url"
+)
 
 const (
 	USER_DETAIL_ENDPOINT_NAME = "UserDetail"
@@ -11,6 +15,35 @@ func GetUserDetailRoute() string {
 	return consts.API_ENDPOINT + "user/detail/"
 }
 
+func BuildUserDetailRoute() string {
+	buildUrl := GetUserDetailRoute() + "?"
+	startUrl := buildUrl
+	addAndConcatParam := func(key string, value string) {
+		if buildUrl != startUrl {
+			buildUrl += "&"
+		}
+		//escapedValue := strings.ReplaceAll(url.QueryEscape(value), "+", "%20")
+		escapedValue := url.QueryEscape(value)
+		buildUrl += fmt.Sprintf("%s=%s", key, escapedValue)
+	}
+	addAndConcatParam("aid", "1988")
+	addAndConcatParam("app_name", "tiktok_web")
+	addAndConcatParam("browser_language", "zh-CN")
+	addAndConcatParam("browser_name", "Mozilla")
+	addAndConcatParam("browser_online", "true")
+	addAndConcatParam("browser_platform", "Win32")
+	addAndConcatParam("browser_version", "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
+	addAndConcatParam("cookie_enabled", "true")
+	addAndConcatParam("device_id", "7419900769212581419")
+	addAndConcatParam("device_platform", "web_pc")
+	addAndConcatParam("os", "windows")
+	addAndConcatParam("region", "US")
+	addAndConcatParam("screen_height", "1080")
+	addAndConcatParam("screen_width", "1920")
+	addAndConcatParam("tz_name", "Asia/Shanghai")
+	return buildUrl
+}
+
 func GetUserDetailParams(uniqueId string) map[string]interface{} {
 	params := make(map[string]interface{})
 	params["uniqueId"] = uniqueId
@@ -19,7 +52,7 @@ func GetUserDetailParams(uniqueId string) map[string]interface{} {
 
 func BuildUserDetailEndpoint(itemId string) (consts.HTTPMethodType, string, map[string]interface{}, map[string]interface{}, UserDetailRes, error) {
 	res := UserDetailRes{}
-	return USER_DETAIL_METHOD, GetUserDetailRoute(), GetUserDetailParams(itemId), make(map[string]interface{}), res, nil
+	return USER_DETAIL_METHOD, BuildUserDetailRoute(), GetUserDetailParams(itemId), make(map[string]interface{}), res, nil
 }
 
 type UserDetailRes struct {

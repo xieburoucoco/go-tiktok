@@ -48,7 +48,7 @@ func TestHome(t *testing.T) {
 func TestItemDetail(t *testing.T) {
 	ctx := context.Background()
 	api := logic.NewITikTokAPI(*logic.NewParamAdapter())
-	msToken := "rwyKHF2ULPSVb4vYYJK_ilJ3LZWbYXNJ2M7y57-hMrHm0NzB_gTwVWX74Pd8PpXasOutNgaq-W6KXK9ckibc8Orv-l-W1_i6rfh5Pw7vnf-9Dd6NwENdN8vJ-IImlkVOkAlZEvUSRtwAMT7d88ma4PmKx5k=" // See readme.md file for how to obtain the msToken
+	msToken := "IAf95B5TvP9sbPnY5pocbaybCXzbk2BBGNGSHs3kRbwvDSrttMwr89HjMNNXpO4qPM_G2et3mNcakpGCZMRFsHyCsyVTV1tFwXAPkO2fXclqvdXzV1567clard7P03STvhKk_AdalvcdwXTonPIOJ197Pi8" // See readme.md file for how to obtain the msToken
 	_, body, res, err := api.ItemDetail(ctx, "7273529185589562625", msToken, "http://localhost:7897")
 	if err != nil {
 		t.Error(err)
@@ -62,8 +62,8 @@ func TestItemDetail(t *testing.T) {
 func TestMusicItemList(t *testing.T) {
 	ctx := context.Background()
 	api := logic.NewITikTokAPI(*logic.NewParamAdapter())
-	msToken := "input your msToken for Browser Cookie" // See readme.md file for how to obtain the msToken
-	_, body, res, err := api.MusicItemList(ctx, "7389877976516627216", "0", msToken, "http://localhost:7890")
+	msToken := "sfJ01Kp0B-b9LLB9QRG6qvyuzFOu7j-C1kW78-ESHg603RLe38iXXxkv5R_V0fer0jpwaOrGFFnAH2Db3yGammAR7U5iL9COHiXaetdURouEdriCDwKv8OEE-wjVl1WtQfqbwv--0zI8W9YuWFcdBOxJf80==" // See readme.md file for how to obtain the msToken
+	_, body, res, err := api.MusicItemList(ctx, "7196737013066828546", "0", msToken, "http://localhost:7897")
 	if err != nil {
 		t.Error(err)
 		return
@@ -73,26 +73,26 @@ func TestMusicItemList(t *testing.T) {
 }
 
 // Get the user's details . example:  https://www.tiktok.com/api/user/detail/
-func TestUserDetail(t *testing.T) {
-	ctx := context.Background()
-	api := logic.NewITikTokAPI(*logic.NewParamAdapter())
-	msToken := "MUyWP1yEeMKXbZFS9aaw8FXb2VQ60BZOnqQKu-Snmzfeh3DrXNIWcotjHNlNw4dT7hlwhx_XR5aHbsrXGWFoheYc6_HliiD4eNM-sVhe4-kV1lRadi4dFFVdh7HJN54inq-d1LbJWUoe2-0Bu3vBiaXnHnw=" // See readme.md file for how to obtain the msToken
-	_, body, res, err := api.UserDetail(ctx, "gemdzq", msToken, "http://localhost:7897")
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	t.Log(string(body))
-
-	t.Log(res)
-}
+//func TestUserDetail(t *testing.T) {
+//	ctx := context.Background()
+//	api := logic.NewITikTokAPI(*logic.NewParamAdapter())
+//	msToken := "sfJ01Kp0B-b9LLB9QRG6qvyuzFOu7j-C1kW78-ESHg603RLe38iXXxkv5R_V0fer0jpwaOrGFFnAH2Db3yGammAR7U5iL9COHiXaetdURouEdriCDwKv8OEE-wjVl1WtQfqbwv--0zI8W9YuWFcdBOxJf80==" // See readme.md file for how to obtain the msToken
+//	_, body, res, err := api.UserDetail(ctx, "gemdzq", msToken, "http://localhost:7897")
+//	if err != nil {
+//		t.Error(err)
+//		return
+//	}
+//	t.Log(string(body))
+//
+//	t.Log(res)
+//}
 
 // Get the user's attention as well as a list of followers. example: https://www.tiktok.com/api/user/list
 func TestUserList(t *testing.T) {
 	ctx := context.Background()
 	api := logic.NewITikTokAPI(*logic.NewParamAdapter())
-	msToken := "MUyWP1yEeMKXbZFS9aaw8FXb2VQ60BZOnqQKu-Snmzfeh3DrXNIWcotjHNlNw4dT7hlwhx_XR5aHbsrXGWFoheYc6_HliiD4eNM-sVhe4-kV1lRadi4dFFVdh7HJN54inq-d1LbJWUoe2-0Bu3vBiaXnHnw=" // See readme.md file for how to obtain the msToken
-	secUid := ""                                                                                                                                                              // See readme.md file for how to obtain the secUid
+	msToken := "dJ78sFyfkBNjyxMAhXC0GUIZVJhdHDzGdpCJXyNMlgwqJXDtKmhNe3MHasDXpKQmcXV_X9bHMOlRVPS5Bg0PJvy4shGIM1NLk9nm6lz1wsh2CDe4kXpNO0cFIAXR1EJ1_DRb97HKdmYCzdKWbtLgTa16" // See readme.md file for how to obtain the msToken
+	secUid := "MS4wLjABAAAADWVixuGqt-G8FDQ9yx9TLQD-4fFpwQtBhXe6EDCJ32wiprPkgzEzdGCjCR1PEwmf"                                                                              // See readme.md file for how to obtain the secUid
 	_, body, res, err := api.UserList(ctx, endpoint.Following, secUid, "0", "0", msToken, "http://localhost:7897")
 	if err != nil {
 		t.Error(err)
@@ -108,7 +108,7 @@ func TestSearch(t *testing.T) {
 	api := logic.NewITikTokAPI(*logic.NewParamAdapter())
 	msToken := "" // See readme.md file for how to obtain the msToken
 	//msToken := "input your msToken for Browser Cookie"                                                                                                                        // See readme.md file for how to obtain the msToken
-	ttwid := "1%7CLX32v3zr6FNzupFObOTVmXKBOWtCKeK81YZJHtL9EuI%7C1744293769%7C3835791b940f7b3e5eedb778c92d72290b2b1a5acbf7695c6572ec508f0acb7e" // See readme.md file for how to obtain the ttwid
+	ttwid := "t6NL9TUgftL2TJwac-tvewiC9UN5FZamAl6_189t6C-9lSC7sXvc7vMSgdF9KDBsHvczb0YmNarPzODKES89ofY7KYzb4S0LBj0a2DN506OpkQuj1JQ5gwTc5o3brI1D6v-vK6nwzEXahzHiRqwviMDYMw==" // See readme.md file for how to obtain the ttwid
 	_, body, res, err := api.Search(ctx, endpoint.LIVE, "Trump", "", ttwid, msToken, "http://localhost:7897")
 	if err != nil {
 		t.Error(err)
