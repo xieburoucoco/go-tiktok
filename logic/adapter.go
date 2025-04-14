@@ -13,7 +13,9 @@ type TypeName string
 const (
 	SearchTypeName        TypeName = endpoint.SEARCH_ENDPOINT_NAME
 	ItemDetailTypeName    TypeName = endpoint.ITEM_DETAIL_ENDPOINT_NAME
+	ItemListTypeName      TypeName = endpoint.ITEM_LIST_ENDPOINT_NAME
 	MusicItemListTypeName TypeName = endpoint.MUSIC_ITEM_LIST_ENDPOINT_NAME
+	CommentTypeName       TypeName = endpoint.COMMENT_ENDPOINT_NAME
 	UserDetailTypeName    TypeName = endpoint.USER_DETAIL_ENDPOINT_NAME
 	UserListTypeName      TypeName = endpoint.USER_LIST_ENDPOINT_NAME
 )
@@ -25,18 +27,22 @@ func NewParamAdapter() *ParamAdapter {
 	return &ParamAdapter{}
 }
 
-func (s *ParamAdapter) GetEndpointRequestData(ctx context.Context, typeName TypeName, args ...interface{}) (httpMethod consts.HTTPMethodType, route string, params map[string]interface{}, cookies map[string]interface{}, model interface{}, err error) {
+func (s *ParamAdapter) GetEndpointRequestData(ctx context.Context, typeName TypeName, msToken string, args ...interface{}) (httpMethod consts.HTTPMethodType, route string, params map[string]interface{}, cookies map[string]interface{}, model interface{}, err error) {
 	switch typeName {
 	case SearchTypeName:
-		httpMethod, route, params, cookies, model, err = endpoint.BuildSearchEndpoint(args[0].(endpoint.TypeSearchEndpointName), args[1].(string), args[2].(string), args[3].(string))
+		httpMethod, route, params, cookies, model, err = endpoint.BuildSearchEndpoint(ctx, msToken, args[0].(endpoint.TypeSearchEndpointName), args[1].(string), args[2].(string), args[3].(string))
 	case ItemDetailTypeName:
-		httpMethod, route, params, cookies, model, err = endpoint.BuildItemDetailEndpoint(args[0].(string))
+		httpMethod, route, params, cookies, model, err = endpoint.BuildItemDetailEndpoint(ctx, msToken, args[0].(string))
+	case ItemListTypeName:
+		httpMethod, route, params, cookies, model, err = endpoint.BuildItemListEndpoint(ctx, msToken, args[0].(string), args[1].(string))
 	case UserDetailTypeName:
 		httpMethod, route, params, cookies, model, err = endpoint.BuildUserDetailEndpoint(args[0].(string))
 	case UserListTypeName:
 		httpMethod, route, params, cookies, model, err = endpoint.BuildUserListEndpoint(args[0].(endpoint.SceneType), args[1].(string), args[2].(string), args[3].(string))
 	case MusicItemListTypeName:
-		httpMethod, route, params, cookies, model, err = endpoint.BuildMusicItemListEndpoint(args[0].(string), args[1].(string))
+		httpMethod, route, params, cookies, model, err = endpoint.BuildMusicItemListEndpoint(ctx, msToken, args[0].(string), args[1].(string))
+	case CommentTypeName:
+		httpMethod, route, params, cookies, model, err = endpoint.BuildCommentEndpoint(ctx, msToken, args[0].(string), args[1].(string))
 	default:
 		return httpMethod, route, params, cookies, model, fmt.Errorf("unsupported type name: %s", typeName)
 	}
@@ -44,7 +50,7 @@ func (s *ParamAdapter) GetEndpointRequestData(ctx context.Context, typeName Type
 }
 
 func (s *ParamAdapter) FetchEndpoint(ctx context.Context, proxyURL string, msToken string, typeName TypeName, args ...interface{}) (response *resty.Response, responseBody []byte, err error) {
-	httpMethod, route, params, cookies, model, err := NewParamAdapter().GetEndpointRequestData(ctx, typeName, args...)
+	httpMethod, route, params, cookies, model, err := NewParamAdapter().GetEndpointRequestData(ctx, typeName, msToken, args...)
 	if err != nil {
 		return response, responseBody, err
 	}

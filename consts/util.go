@@ -1,11 +1,10 @@
-package script
+package consts
 
 import (
 	"bytes"
 	"context"
 	_ "embed"
 	"fmt"
-	"github.com/xieburoucoco/go-tiktok/consts"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -62,8 +61,8 @@ func (s *SNodeScriptUtil) GetXbScript(ctx context.Context) (NodeScript, error) {
 	if err != nil {
 		return res, err
 	}
-	tempPath := filepath.Join(workingDir, consts.XB_SCRIPT_PATH)
-	scriptDir := filepath.Dir(consts.XB_SCRIPT_PATH)
+	tempPath := filepath.Join(workingDir, XB_SCRIPT_PATH)
+	scriptDir := filepath.Dir(XB_SCRIPT_PATH)
 	if err := os.MkdirAll(scriptDir, 0755); err != nil {
 		return res, fmt.Errorf("failed to create script directory: %w", err)
 	}

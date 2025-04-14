@@ -11,8 +11,10 @@ import (
 type ITikTokAPI interface {
 	Search(ctx context.Context, typeRoute endpoint.TypeSearchEndpointName, keyword string, offset string, ttwid string, msToken string, proxyURL string) (response *resty.Response, responseBody []byte, res endpoint.SearchRes, err error)
 	ItemDetail(ctx context.Context, itemId string, msToken string, proxyURL string) (response *resty.Response, responseBody []byte, res endpoint.ItemDetailRes, err error)
+	ItemList(ctx context.Context, secUid string, cursor string, msToken string, proxyURL string) (response *resty.Response, responseBody []byte, res endpoint.ItemListRes, err error)
 	UserDetail(ctx context.Context, uniqueId string, msToken string, proxyURL string) (response *resty.Response, responseBody []byte, res endpoint.UserDetailRes, err error)
 	MusicItemList(ctx context.Context, musicId string, cursor string, msToken string, proxyURL string) (response *resty.Response, responseBody []byte, res endpoint.ItemDetailRes, err error)
+	CommentList(ctx context.Context, awemeId, cursor, msToken, proxyURL string) (response *resty.Response, responseBody []byte, res endpoint.CommentRes, err error)
 	Home(ctx context.Context, uniqueId string, proxyURL string) (response *resty.Response, responseBody []byte, res endpoint.HomeRes, err error)
 	UserList(ctx context.Context, scene endpoint.SceneType, secUid, maxCursor, minCursor string, msToken string, proxyURL string) (response *resty.Response, responseBody []byte, res endpoint.UserListRes, err error)
 }
@@ -46,6 +48,15 @@ func (s *STikTokAPI) ItemDetail(ctx context.Context, itemId string, msToken stri
 	return response, responseBody, res, err
 }
 
+func (s *STikTokAPI) ItemList(ctx context.Context, secUid string, cursor string, msToken string, proxyURL string) (response *resty.Response, responseBody []byte, res endpoint.ItemListRes, err error) {
+	response, responseBody, err = s.Adapter.FetchEndpoint(ctx, proxyURL, msToken, ItemListTypeName, secUid, cursor)
+	if err != nil {
+		return response, responseBody, res, err
+	}
+	err = json.Unmarshal(responseBody, &res)
+	return response, responseBody, res, err
+}
+
 func (s *STikTokAPI) UserDetail(ctx context.Context, uniqueId string, msToken string, proxyURL string) (response *resty.Response, responseBody []byte, res endpoint.UserDetailRes, err error) {
 	response, responseBody, err = s.Adapter.FetchEndpoint(ctx, proxyURL, msToken, UserDetailTypeName, uniqueId)
 	if err != nil {
@@ -65,6 +76,15 @@ func (s *STikTokAPI) UserList(ctx context.Context, scene endpoint.SceneType, sec
 
 func (s *STikTokAPI) MusicItemList(ctx context.Context, musicId string, cursor string, msToken string, proxyURL string) (response *resty.Response, responseBody []byte, res endpoint.ItemDetailRes, err error) {
 	response, responseBody, err = s.Adapter.FetchEndpoint(ctx, proxyURL, msToken, MusicItemListTypeName, musicId, cursor)
+	if err != nil {
+		return response, responseBody, res, err
+	}
+	err = json.Unmarshal(responseBody, &res)
+	return response, responseBody, res, err
+}
+
+func (s *STikTokAPI) CommentList(ctx context.Context, awemeId, cursor, msToken, proxyURL string) (response *resty.Response, responseBody []byte, res endpoint.CommentRes, err error) {
+	response, responseBody, err = s.Adapter.FetchEndpoint(ctx, proxyURL, msToken, CommentTypeName, awemeId, cursor)
 	if err != nil {
 		return response, responseBody, res, err
 	}

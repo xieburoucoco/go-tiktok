@@ -58,12 +58,40 @@ func TestItemDetail(t *testing.T) {
 	t.Log(res)
 }
 
+// Get a list of video metadata . example:  https://www.tiktok.com/api/post/item_list/
+func TestItemList(t *testing.T) {
+	ctx := context.Background()
+	api := logic.NewITikTokAPI(*logic.NewParamAdapter())
+	msToken := "GP0csW6HHSJqLQQpLgcBn4JO0HXbV0MeZIdUgEYYAdqmnVaQaF5no-i0a7hyKWPoyKSsISz3TVBQbDgss_aRfB5Ft2gXLC1mWNsnZUICj_W8k4lizgdZTCdqDEjZDOhaELPeuh_2_3kgPCFO4-ighnSK" // See readme.md file for how to obtain the msToken
+	_, body, res, err := api.ItemList(ctx, "MS4wLjABAAAADWVixuGqt-G8FDQ9yx9TLQD-4fFpwQtBhXe6EDCJ32wiprPkgzEzdGCjCR1PEwmf", "0", msToken, "http://localhost:7897")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(string(body))
+	t.Log(res)
+}
+
 // Get the Music info list . example: https://www.tiktok.com/api/music/item_list/
 func TestMusicItemList(t *testing.T) {
 	ctx := context.Background()
 	api := logic.NewITikTokAPI(*logic.NewParamAdapter())
 	msToken := "sfJ01Kp0B-b9LLB9QRG6qvyuzFOu7j-C1kW78-ESHg603RLe38iXXxkv5R_V0fer0jpwaOrGFFnAH2Db3yGammAR7U5iL9COHiXaetdURouEdriCDwKv8OEE-wjVl1WtQfqbwv--0zI8W9YuWFcdBOxJf80==" // See readme.md file for how to obtain the msToken
 	_, body, res, err := api.MusicItemList(ctx, "7196737013066828546", "0", msToken, "http://localhost:7897")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(string(body))
+	t.Log(res)
+}
+
+// Get the Comment list . example: https://www.tiktok.com/api/comment/list/
+func TestCommentList(t *testing.T) {
+	ctx := context.Background()
+	api := logic.NewITikTokAPI(*logic.NewParamAdapter())
+	msToken := "DNLk-Hr7680j2-yuUy3T9i-oriZ8MDIHNspfoPABV76u9q4rjeoBv-paClkYUOTH3ZCjS3ChO7fdaEoYvMI9Jzq4dPZMjEzobOu2Et-Y_BB_t7fC6bxCwYhQYWD7B4zrw1umopt3f9IHEhbO7E8gVRuNzA==" // See readme.md file for how to obtain the msToken
+	_, body, res, err := api.CommentList(ctx, "7339184461612993794", "0", msToken, "http://localhost:7897")
 	if err != nil {
 		t.Error(err)
 		return
@@ -108,7 +136,7 @@ func TestSearch(t *testing.T) {
 	api := logic.NewITikTokAPI(*logic.NewParamAdapter())
 	msToken := "" // See readme.md file for how to obtain the msToken
 	//msToken := "input your msToken for Browser Cookie"                                                                                                                        // See readme.md file for how to obtain the msToken
-	ttwid := "t6NL9TUgftL2TJwac-tvewiC9UN5FZamAl6_189t6C-9lSC7sXvc7vMSgdF9KDBsHvczb0YmNarPzODKES89ofY7KYzb4S0LBj0a2DN506OpkQuj1JQ5gwTc5o3brI1D6v-vK6nwzEXahzHiRqwviMDYMw==" // See readme.md file for how to obtain the ttwid
+	ttwid := "1%7CLX32v3zr6FNzupFObOTVmXKBOWtCKeK81YZJHtL9EuI%7C1744637575%7Ce786ea2e5b4169cfe47f1a318485b5856220c27a9469d910660949ee3b22bb23" // See readme.md file for how to obtain the ttwid
 	_, body, res, err := api.Search(ctx, endpoint.LIVE, "Trump", "", ttwid, msToken, "http://localhost:7897")
 	if err != nil {
 		t.Error(err)

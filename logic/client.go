@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/xieburoucoco/go-tiktok/consts"
-	"github.com/xieburoucoco/go-tiktok/script"
 	"net/http"
 	"net/url"
 )
@@ -93,11 +92,11 @@ func (s *STikTokCli) Do(ctx context.Context) (*resty.Response, error) {
 	//}
 	//s.options.URL += "&" + consts.XBOGUS + "=" + xbValue
 	//s.BuildBaseRoute(ua)
-	s.BuildParamRoute()
-	s.BuildMsTokenRoute(s.options.MsToken)
-	if err = s.BuildXBogusRoute(ctx, ua); err != nil {
-		return nil, err
-	}
+	//s.BuildParamRoute()
+	//s.BuildMsTokenRoute(s.options.MsToken)
+	//if err = s.BuildXBogusRoute(ctx, ua); err != nil {
+	//	return nil, err
+	//}
 	fmt.Println(s.options.URL)
 	switch s.options.Method {
 	case consts.GET:
@@ -159,18 +158,4 @@ func (s *STikTokCli) BuildParamRoute() {
 	for k, v := range s.options.Params {
 		s.options.URL += fmt.Sprintf("&%s=%s", k, url.QueryEscape(fmt.Sprintf("%v", v)))
 	}
-}
-
-func (s *STikTokCli) BuildMsTokenRoute(msToken string) {
-	//s.options.URL += fmt.Sprintf("&%s=%s", consts.MSTOKEN, url.QueryEscape(fmt.Sprintf("%v", msToken)))
-	s.options.URL += fmt.Sprintf("&%s=%s", consts.MSTOKEN, msToken)
-}
-
-func (s *STikTokCli) BuildXBogusRoute(ctx context.Context, ua string) error {
-	xbValue, err := script.NewSNodeScriptUtil().GetXbValueByNodeCmd(ctx, s.options.URL, ua)
-	if err != nil {
-		return err
-	}
-	s.options.URL += fmt.Sprintf("&%s=%s", consts.XBOGUS, url.QueryEscape(fmt.Sprintf("%v", xbValue)))
-	return nil
 }

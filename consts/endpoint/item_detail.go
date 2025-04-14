@@ -1,9 +1,8 @@
 package endpoint
 
 import (
-	"fmt"
+	"context"
 	"github.com/xieburoucoco/go-tiktok/consts"
-	"net/url"
 )
 
 const (
@@ -15,90 +14,36 @@ func GetItemDetailRoute() string {
 	return consts.API_ENDPOINT + "item/detail/"
 }
 
-func BuildItemDetailRoute() string {
+func BuildItemDetailRoute(ctx context.Context, msToken, itemId string) (string, error) {
 	buildUrl := GetItemDetailRoute() + "?"
-	startUrl := buildUrl
-	addAndConcatParam := func(key string, value string) {
-		if buildUrl != startUrl {
-			buildUrl += "&"
-		}
-		//escapedValue := strings.ReplaceAll(url.QueryEscape(value), "+", "%20")
-		escapedValue := url.QueryEscape(value)
-		buildUrl += fmt.Sprintf("%s=%s", key, escapedValue)
-	}
-	addAndConcatParam("aid", "1988")
-	addAndConcatParam("app_name", "tiktok_web")
-	addAndConcatParam("browser_language", "zh-CN")
-	addAndConcatParam("browser_name", "Mozilla")
-	addAndConcatParam("browser_online", "true")
-	addAndConcatParam("browser_platform", "Win32")
-	addAndConcatParam("browser_version", "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
-	addAndConcatParam("cookie_enabled", "true")
-	addAndConcatParam("device_id", "7419900769212581419")
-	addAndConcatParam("device_platform", "web_pc")
-	addAndConcatParam("os", "windows")
-	addAndConcatParam("region", "US")
-	addAndConcatParam("screen_height", "1080")
-	addAndConcatParam("screen_width", "1920")
-	addAndConcatParam("tz_name", "Asia/Shanghai")
-	return buildUrl
+	fullRoute, err := consts.NewSRoute(buildUrl).
+		BuildParam("aid", "1988").
+		BuildParam("aid", "1988").
+		BuildParam("app_name", "tiktok_web").
+		BuildParam("browser_language", "zh-CN").
+		BuildParam("browser_name", "Mozilla").
+		BuildParam("browser_online", "true").
+		BuildParam("browser_platform", "Win32").
+		BuildParam("browser_version", consts.BROWSER_VERSION).
+		BuildParam("cookie_enabled", "true").
+		BuildParam("device_id", "7419900769212581419").
+		BuildParam("device_platform", "web_pc").
+		BuildParam("os", "windows").
+		BuildParam("region", "US").
+		BuildParam("screen_height", "1080").
+		BuildParam("screen_width", "1920").
+		BuildParam("tz_name", "Asia/Shanghai").
+		BuildParam("itemId", itemId).
+		BuildMsTokenRoute(msToken).
+		BuildXBogusRoute(ctx, consts.USER_AGENT_DEFAULT_VALUE)
+	return string(fullRoute), err
 }
 
-func GetItemDetailParams(itemId string) map[string]interface{} {
-	params := make(map[string]interface{})
-	params["itemId"] = itemId
-	return params
-}
-
-func BuildItemDetailEndpoint(itemId string) (consts.HTTPMethodType, string, map[string]interface{}, map[string]interface{}, ItemDetailRes, error) {
+func BuildItemDetailEndpoint(ctx context.Context, msToken, itemId string) (consts.HTTPMethodType, string, map[string]interface{}, map[string]interface{}, ItemDetailRes, error) {
 	res := ItemDetailRes{}
-	return ITEM_DETAIL_METHOD, BuildItemDetailRoute(), GetItemDetailParams(itemId), make(map[string]interface{}), res, nil
+	route, err := BuildItemDetailRoute(ctx, msToken, itemId)
+	return ITEM_DETAIL_METHOD, route, make(map[string]interface{}), make(map[string]interface{}), res, err
 }
-
-//s.options.URL += "?"
-//startUrl := s.options.URL
-//addAndConcatParam := func(key string, value string) {
-//	if s.options.URL != startUrl {
-//		s.options.URL += "&"
-//	}
-//	escapedValue := url.QueryEscape(value)
-//	s.options.URL += fmt.Sprintf("%s=%s", key, escapedValue)
-//}
-//addAndConcatParam("WebIdLastTime", "1738896054")
-//addAndConcatParam("aid", "1988")
-//addAndConcatParam("app_language", "zh-Hans")
-//addAndConcatParam("app_name", "tiktok_web")
-//addAndConcatParam("browser_language", "zh-CN")
-//addAndConcatParam("browser_name", "Mozilla")
-//addAndConcatParam("browser_online", "true")
-//addAndConcatParam("browser_platform", "Win32")
-//addAndConcatParam("browser_version", ua)
-//addAndConcatParam("channel", "tiktok_web")
-//addAndConcatParam("cookie_enabled", "true")
-//
-//addAndConcatParam("count", "30")
-//addAndConcatParam("coverFormat", "2")
-//addAndConcatParam("cursor", "0")
-//
-//addAndConcatParam("data_collection_enabled", "true")
-//addAndConcatParam("device_id", "7468501464287299079")
-//addAndConcatParam("device_platform", "web_pc")
-//addAndConcatParam("focus_state", "true")
-//addAndConcatParam("from_page", "true")
-//addAndConcatParam("history_len", "2")
-//addAndConcatParam("is_fullscreen", "false")
-//addAndConcatParam("is_page_visible", "true")
-////addAndConcatParam("maxCursor", "0")
-////addAndConcatParam("minCursor", "1744374151")
-//addAndConcatParam("language", "zh-Hans")
-//addAndConcatParam("os", "windows")
-//addAndConcatParam("priority_region", "")
-//addAndConcatParam("referer", "")
-//addAndConcatParam("region", "US")
-//addAndConcatParam("screen_height", "1152")
-//addAndConcatParam("screen_width", "2048")
-//addAndConcatParam("tz_name", "Asia/Shanghai")
-//addAndConcatParam("webcast_language", "zh-Hans")
 
 type ItemDetailRes struct {
 	Extra struct {

@@ -1,6 +1,7 @@
 package endpoint
 
 import (
+	"context"
 	"fmt"
 	"github.com/xieburoucoco/go-tiktok/consts"
 )
@@ -20,6 +21,31 @@ func GetSearchRoute(endpointName TypeSearchEndpointName) string {
 	return consts.API_ENDPOINT + "search/" + string(endpointName) + "/full/"
 }
 
+func BuildSearchRoute(ctx context.Context, msToken string, endpointName TypeSearchEndpointName, keyword, offset string) (string, error) {
+	buildUrl := GetSearchRoute(endpointName) + "?"
+	fullRoute, err := consts.NewSRoute(buildUrl).
+		BuildParam("aid", "1988").
+		BuildParam("app_name", "tiktok_web").
+		BuildParam("browser_language", "zh-CN").
+		BuildParam("browser_name", "Mozilla").
+		BuildParam("browser_online", "true").
+		BuildParam("browser_platform", "Win32").
+		BuildParam("browser_version", "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36").
+		BuildParam("cookie_enabled", "true").
+		BuildParam("device_id", "7419900769212581419").
+		BuildParam("device_platform", "web_pc").
+		BuildParam("os", "windows").
+		BuildParam("region", "US").
+		BuildParam("screen_height", "1080").
+		BuildParam("screen_width", "1920").
+		BuildParam("tz_name", "Asia/Shanghai").
+		BuildParam("keyword", keyword).
+		BuildParam("offset", offset).
+		BuildMsTokenRoute(msToken).
+		BuildXBogusRoute(ctx, consts.USER_AGENT_DEFAULT_VALUE)
+	return string(fullRoute), err
+}
+
 func GetSearchParams(keyword string, offset string) (map[string]interface{}, error) {
 	params := make(map[string]interface{})
 	if len(keyword) == 0 {
@@ -33,15 +59,12 @@ func GetSearchParams(keyword string, offset string) (map[string]interface{}, err
 	return params, nil
 }
 
-func BuildSearchEndpoint(endpointName TypeSearchEndpointName, keyword string, offset string, ttwid string) (consts.HTTPMethodType, string, map[string]interface{}, map[string]interface{}, SearchRes, error) {
+func BuildSearchEndpoint(ctx context.Context, msToken string, endpointName TypeSearchEndpointName, keyword, offset, ttwid string) (consts.HTTPMethodType, string, map[string]interface{}, map[string]interface{}, SearchRes, error) {
 	res := SearchRes{}
-	params, err := GetSearchParams(keyword, offset)
-	if err != nil {
-		return SEARCH_METHOD, GetSearchRoute(endpointName), params, nil, res, err
-	}
 	cookies := make(map[string]interface{})
 	cookies["ttwid"] = ttwid
-	return SEARCH_METHOD, GetSearchRoute(endpointName), params, cookies, res, nil
+	route, err := BuildSearchRoute(ctx, msToken, endpointName, keyword, offset)
+	return SEARCH_METHOD, route, make(map[string]interface{}), cookies, res, err
 }
 
 type SearchRes struct {

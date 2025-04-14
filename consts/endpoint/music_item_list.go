@@ -1,9 +1,8 @@
 package endpoint
 
 import (
-	"fmt"
+	"context"
 	"github.com/xieburoucoco/go-tiktok/consts"
-	"net/url"
 )
 
 const (
@@ -15,33 +14,30 @@ func GetMusicItemListRoute() string {
 	return consts.API_ENDPOINT + "music/item_list/"
 }
 
-func BuildMusicItemListRoute() string {
-	buildUrl := GetMusicItemListRoute() + "?"
-	startUrl := buildUrl
-	addAndConcatParam := func(key string, value string) {
-		if buildUrl != startUrl {
-			buildUrl += "&"
-		}
-		//escapedValue := strings.ReplaceAll(url.QueryEscape(value), "+", "%20")
-		escapedValue := url.QueryEscape(value)
-		buildUrl += fmt.Sprintf("%s=%s", key, escapedValue)
-	}
-	addAndConcatParam("aid", "1988")
-	addAndConcatParam("app_name", "tiktok_web")
-	addAndConcatParam("browser_language", "zh-CN")
-	addAndConcatParam("browser_name", "Mozilla")
-	addAndConcatParam("browser_online", "true")
-	addAndConcatParam("browser_platform", "Win32")
-	addAndConcatParam("browser_version", "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
-	addAndConcatParam("cookie_enabled", "true")
-	addAndConcatParam("device_id", "7419900769212581419")
-	addAndConcatParam("device_platform", "web_pc")
-	addAndConcatParam("os", "windows")
-	addAndConcatParam("region", "US")
-	addAndConcatParam("screen_height", "1080")
-	addAndConcatParam("screen_width", "1920")
-	addAndConcatParam("tz_name", "Asia/Shanghai")
-	return buildUrl
+func BuildMusicItemListRoute(ctx context.Context, msToken, musicId, cursor string) (string, error) {
+	fullRoute, err := consts.NewSRoute(GetMusicItemListRoute()+"?").
+		BuildParam("aid", "1988").
+		BuildParam("app_name", "tiktok_web").
+		BuildParam("browser_language", "zh-CN").
+		BuildParam("browser_name", "Mozilla").
+		BuildParam("browser_online", "true").
+		BuildParam("browser_platform", "Win32").
+		BuildParam("browser_version", "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36").
+		BuildParam("cookie_enabled", "true").
+		BuildParam("device_id", "7419900769212581419").
+		BuildParam("device_platform", "web_pc").
+		BuildParam("os", "windows").
+		BuildParam("region", "US").
+		BuildParam("screen_height", "1080").
+		BuildParam("screen_width", "1920").
+		BuildParam("tz_name", "Asia/Shanghai").
+		BuildParam("musicID", musicId).
+		BuildParam("cursor", cursor).
+		BuildParam("coverFormat", "2").
+		BuildParam("from_page", "music").
+		BuildMsTokenRoute(msToken).
+		BuildXBogusRoute(ctx, consts.USER_AGENT_DEFAULT_VALUE)
+	return string(fullRoute), err
 }
 
 func GetMusicItemListParams(musicId string, cursor string) map[string]interface{} {
@@ -54,9 +50,10 @@ func GetMusicItemListParams(musicId string, cursor string) map[string]interface{
 	return params
 }
 
-func BuildMusicItemListEndpoint(musicId string, cursor string) (consts.HTTPMethodType, string, map[string]interface{}, map[string]interface{}, MusicItemListlRes, error) {
+func BuildMusicItemListEndpoint(ctx context.Context, msToken, musicId, cursor string) (consts.HTTPMethodType, string, map[string]interface{}, map[string]interface{}, MusicItemListlRes, error) {
 	res := MusicItemListlRes{}
-	return MUSIC_ITEM_LIST_METHOD, BuildMusicItemListRoute(), GetMusicItemListParams(musicId, cursor), make(map[string]interface{}), res, nil
+	route, err := BuildMusicItemListRoute(ctx, msToken, musicId, cursor)
+	return MUSIC_ITEM_LIST_METHOD, route, GetMusicItemListParams(musicId, cursor), make(map[string]interface{}), res, err
 }
 
 type MusicItemListlRes struct {

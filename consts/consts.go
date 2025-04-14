@@ -1,6 +1,12 @@
 package consts
 
-import "net/http"
+import (
+	"context"
+	"fmt"
+	"net/http"
+	"net/url"
+	"strings"
+)
 
 const (
 	XB_SCRIPT_PATH = "js/temp_xb.js"
@@ -61,4 +67,41 @@ func GetBaseParams() map[string]string {
 		"tz_name":          "Asia/Shanghai",
 	}
 
+}
+
+type IRoute interface {
+	BuildParam(key, value string) SRoute
+	BuildParamReplace(key, value, old, new string) SRoute
+	BuildMsTokenRoute(msToken string) SRoute
+	BuildXBogusRoute(ctx context.Context, ua string) (SRoute, error)
+}
+
+type SRoute string
+
+func NewSRoute(s string) IRoute {
+	return SRoute(s)
+}
+
+func (s SRoute) BuildParam(key, value string) SRoute {
+	newS := SRoute(fmt.Sprintf("%s%s=%s&", s, key, url.QueryEscape(value)))
+	return newS
+}
+
+func (s SRoute) BuildParamReplace(key, value, old, new string) SRoute {
+	newS := SRoute(fmt.Sprintf("%s%s=%s&", s, key, strings.ReplaceAll(url.QueryEscape(value), old, new)))
+	return newS
+}
+
+func (s SRoute) BuildMsTokenRoute(msToken string) SRoute {
+	newS := SRoute(fmt.Sprintf("%s%s=%s", s, MSTOKEN, msToken))
+	return newS
+}
+
+func (s SRoute) BuildXBogusRoute(ctx context.Context, ua string) (SRoute, error) {
+	xbValue, err := NewSNodeScriptUtil().GetXbValueByNodeCmd(ctx, string(s), ua)
+	if err != nil {
+		return s, err
+	}
+	newS := SRoute(fmt.Sprintf("%s&%s=%s", s, XBOGUS, url.QueryEscape(fmt.Sprintf("%v", xbValue))))
+	return newS, nil
 }

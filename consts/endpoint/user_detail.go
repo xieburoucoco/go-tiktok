@@ -32,7 +32,7 @@ func BuildUserDetailRoute() string {
 	addAndConcatParam("browser_name", "Mozilla")
 	addAndConcatParam("browser_online", "true")
 	addAndConcatParam("browser_platform", "Win32")
-	addAndConcatParam("browser_version", "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
+	addAndConcatParam("browser_version", consts.BROWSER_VERSION)
 	addAndConcatParam("cookie_enabled", "true")
 	addAndConcatParam("device_id", "7419900769212581419")
 	addAndConcatParam("device_platform", "web_pc")
