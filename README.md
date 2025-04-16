@@ -4,7 +4,7 @@
 
 # Go-TikTok SDK
 
-一个开源的 TikTok 平台 SDK，使用 Go 语言开发，支持获取用户详情、视频元数据、音乐信息、搜索等功能。
+一个开源的 TikTok 平台 SDK，使用 Go 语言开发，支持获取用户详情、视频元数据、音乐信息、搜索以及评论等功能。
 
 ---
 
@@ -159,7 +159,7 @@ func TestCommentList(t *testing.T) {
 
 ---
 
-5. 获取关注粉丝列表：
+6. 获取关注粉丝列表：
 ```go
 // Get the user's attention as well as a list of followers. example: https://www.tiktok.com/api/user/list
 func TestUserList(t *testing.T) {
@@ -180,7 +180,7 @@ func TestUserList(t *testing.T) {
 
 ---
 
-6. 搜索列表：
+7. 搜索列表：
 ```go
 // Search video item . example: https://www.tiktok.com/@gemdzq
 func TestSearch(t *testing.T) {
@@ -252,5 +252,3 @@ go-tiktok/
 ```
 
 ---
-
-这个 `README.md` 文件简洁明了，包含了项目名称、使用方法、使用案例、参数获取步骤以及联系方式，完全基于你的项目结构和测试用例生成。你可以直接将其放入项目根目录，并在邮箱部分替换为你的真实邮箱地址。
