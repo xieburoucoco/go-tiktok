@@ -80,22 +80,125 @@ func TestHome(t *testing.T) {
 ---
 2. 获取用户主页视频详情：
 ```go
-// Get the user's attention as well as a list of followers. example: https://www.tiktok.com/api/user/list
-func TestUserList(t *testing.T) {
-	ctx := context.Background()
-	api := logic.NewITikTokAPI(*logic.NewParamAdapter())
-	msToken := "Xae_uiErd4zeHXh0PfKhGbWV5EiFE1WqQiMXwhMOS-T0UzKVR3YcO3n9eANeWYiQkZosWXupEuTLrKIGZXexDRS3wI3dlQE_nbv4RcXTBd3xIllS127pAka__vFJD8BSPJyl8u784Zg4a7vczspUPgHcoHo=" // See readme.md file for how to obtain the msToken
-	secUid := "MS4wLjABAAAADWVixuGqt-G8FDQ9yx9TLQD-4fFpwQtBhXe6EDCJ32wiprPkgzEzdGCjCR1PEwmf"                                                                                  // See readme.md file for how to obtain the secUid
-	_, body, res, err := api.UserList(ctx, endpoint.Following, secUid, "0", "1744095875", msToken, "http://localhost:7897")
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	t.Log(string(body))
-	t.Log(res)
+// Get a list of video metadata . example:  https://www.tiktok.com/api/item/detail/
+func TestItemDetail(t *testing.T) {
+    ctx := context.Background()
+    api := logic.NewITikTokAPI(*logic.NewParamAdapter())
+    msToken := "Enter the cookie key mstoken you got from your browser" // See readme.md file for how to obtain the msToken
+    _, body, res, err := api.ItemDetail(ctx, "7273529185589562625", msToken, "http://localhost:7897")
+    if err != nil {
+        t.Error(err)
+        return
+    }
+    t.Log(string(body))
+    t.Log(res)
 }
 ```
-![img.png](doc%2Fimg%2Fimg.png)
+![item_detail.png](doc%2Fimg%2Fitem_detail.png)
+
+---
+
+3. 获取用户主页视频列表：
+```go
+// Get the user's attention as well as a list of followers. example: https://www.tiktok.com/api/user/list
+func TestUserList(t *testing.T) {
+    ctx := context.Background()
+    api := logic.NewITikTokAPI(*logic.NewParamAdapter())
+    msToken := "Enter the cookie key mstoken you got from your browser" // See readme.md file for how to obtain the msToken // See readme.md file for how to obtain the msToken
+    secUid := "input your secUid"                                       // See readme.md file for how to obtain the secUid
+    _, body, res, err := api.UserList(ctx, endpoint.Following, secUid, "0", "0", msToken, "http://localhost:7897")
+    if err != nil {
+        t.Error(err)
+        return
+    }
+    t.Log(string(body))
+    t.Log(res)
+}
+```
+![item_list.png](doc%2Fimg%2Fitem_list.png)
+
+---
+
+4. 获取音乐列表：
+```go
+// Get the Music info list . example: https://www.tiktok.com/api/music/item_list/
+func TestMusicItemList(t *testing.T) {
+    ctx := context.Background()
+    api := logic.NewITikTokAPI(*logic.NewParamAdapter())
+    msToken := "Enter the cookie key mstoken you got from your browser" // See readme.md file for how to obtain the msToken // See readme.md file for how to obtain the msToken
+    _, body, res, err := api.MusicItemList(ctx, "7196737013066828546", "0", msToken, "http://localhost:7897")
+    if err != nil {
+        t.Error(err)
+        return
+    }
+    t.Log(string(body))
+    t.Log(res)
+}
+```
+![music.png](doc%2Fimg%2Fmusic.png)
+
+---
+
+5. 获取评论列表：
+```go
+// Get the Comment list . example: https://www.tiktok.com/api/comment/list/
+func TestCommentList(t *testing.T) {
+    ctx := context.Background()
+    api := logic.NewITikTokAPI(*logic.NewParamAdapter())
+    msToken := "Enter the cookie key mstoken you got from your browser" // See readme.md file for how to obtain the msToken // See readme.md file for how to obtain the msToken
+    _, body, res, err := api.CommentList(ctx, "7339184461612993794", "0", msToken, "http://localhost:7897")
+    if err != nil {
+        t.Error(err)
+        return
+    }
+    t.Log(string(body))
+    t.Log(res)
+}
+```
+![comment.png](doc%2Fimg%2Fcomment.png)
+
+---
+
+5. 获取关注粉丝列表：
+```go
+// Get the user's attention as well as a list of followers. example: https://www.tiktok.com/api/user/list
+func TestUserList(t *testing.T) {
+    ctx := context.Background()
+    api := logic.NewITikTokAPI(*logic.NewParamAdapter())
+    msToken := "Enter the cookie key mstoken you got from your browser" // See readme.md file for how to obtain the msToken // See readme.md file for how to obtain the msToken
+    secUid := "input your secUid"                                       // See readme.md file for how to obtain the secUid
+    _, body, res, err := api.UserList(ctx, endpoint.Following, secUid, "0", "0", msToken, "http://localhost:7897")
+    if err != nil {
+        t.Error(err)
+        return
+    }
+    t.Log(string(body))
+    t.Log(res)
+}
+```
+![user.png](doc%2Fimg%2Fuser.png)
+
+---
+
+6. 搜索列表：
+```go
+// Search video item . example: https://www.tiktok.com/@gemdzq
+func TestSearch(t *testing.T) {
+    ctx := context.Background()
+    api := logic.NewITikTokAPI(*logic.NewParamAdapter())
+    msToken := "" // See readme.md file for how to obtain the msToken
+    //msToken := "input your msToken for Browser Cookie"                                                                                                                        // See readme.md file for how to obtain the msToken
+    ttwid := "enter the ttwid you got from the cookie" // See readme.md file for how to obtain the ttwid
+    _, body, res, err := api.Search(ctx, endpoint.LIVE, "Trump", "", ttwid, msToken, "http://localhost:7897")
+    if err != nil {
+        t.Error(err)
+        return
+    }
+    t.Log(string(body))
+    t.Log(res)
+}
+```
+![search.png](doc%2Fimg%2Fsearch.png)
 
 ---
 ## 从浏览器获取参数
@@ -105,21 +208,20 @@ func TestUserList(t *testing.T) {
 ### 1. `msToken`
 - **步骤**：
     1. 打开浏览器，访问 `https://www.tiktok.com`。
-    2. 按 F12 打开开发者工具，转到「Network」标签。
-    3. 刷新页面，筛选请求，找到任意 TikTok API 请求（如 `/api/search`）。
-    4. 在请求的 Cookie 中找到 `msToken=xxx`，复制 `xxx` 部分。
-
+    2. 按 F12 打开开发者工具，转到「Application」标签。
+    3. 在Filter输入msToken进行过滤，找到msToken值，复制下来即可。
+![img_1.png](img_1.png)
 ### 2. `ttwid`
 - **步骤**：
-    1. 同上，打开开发者工具，转到「Network」标签。
-    2. 找到 TikTok 的请求，在 Cookie 中查找 `ttwid=xxx`，复制 `xxx` 部分。
-
+    1. 同上。
+    ![img_2.png](img_2.png)
 ### 3. `secUid`
 - **步骤**：
     1. 访问目标用户主页（如 `https://www.tiktok.com/@gemdzq`）。
     2. 查看页面源代码（Ctrl+U），搜索 `secUid`。
     3. 找到类似 `"secUid": "MS4wLjABAAAAxxx"` 的字段，复制引号中的值。
-
+    ![img_3.png](img_3.png)
+    4. 如果没有找到 `secUid`，可以通过api.Home接口输入uniqueId来获取secUid。
 ### 4. `uniqueId`
 - **步骤**：
     1. 在用户主页 URL 中，`@` 后的部分即为 `uniqueId`。
@@ -129,7 +231,7 @@ func TestUserList(t *testing.T) {
 
 ## 联系方式
 
-- **邮箱**：xieburoucoco@example.com（请替换为你的真实邮箱）
+- **邮箱**：xieburoucoco@gmail.com
 - **寄语**：欢迎开发者留下 Issue 或提交 PR 请求！任何意见我都会认真听取，期待与大家一起完善这个项目。
 
 ---
@@ -137,10 +239,11 @@ func TestUserList(t *testing.T) {
 ### 项目结构（参考）
 ```
 go-tiktok/
-├── consts/             # 常量定义
+├─consts
+│  ├─endpoint
+│  └─js
 ├── example/            # 示例代码
 ├── logic/              # 核心逻辑
-├── script/             # 脚本文件（含 JS）
 ├── .gitignore
 ├── go.mod
 ├── go.sum

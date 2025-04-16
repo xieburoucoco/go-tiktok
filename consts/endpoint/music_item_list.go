@@ -33,6 +33,7 @@ func BuildMusicItemListRoute(ctx context.Context, msToken, musicId, cursor strin
 		BuildParam("tz_name", "Asia/Shanghai").
 		BuildParam("musicID", musicId).
 		BuildParam("cursor", cursor).
+		BuildParam("count", "30").
 		BuildParam("coverFormat", "2").
 		BuildParam("from_page", "music").
 		BuildMsTokenRoute(msToken).

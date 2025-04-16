@@ -19,7 +19,7 @@ func BuildCommentRoute(ctx context.Context, msToken, awemeId, cursor string) (st
 	fullRoute, err := consts.NewSRoute(buildUrl).
 		BuildParam("WebIdLastTime", "1738896054").
 		BuildParam("aid", "1988").
-		BuildParam("app_language", "zh-Hans").
+		BuildParam("app_language", "ja-JP").
 		BuildParam("app_name", "tiktok_web").
 		BuildParam("aweme_id", awemeId).
 		BuildParam("browser_language", "zh-CN").
@@ -27,9 +27,11 @@ func BuildCommentRoute(ctx context.Context, msToken, awemeId, cursor string) (st
 		BuildParam("browser_online", "true").
 		BuildParam("browser_platform", "Win32").
 		BuildParamReplace("browser_version", consts.BROWSER_VERSION, "+", "%20").
+		//BuildParam("browser_version", consts.BROWSER_VERSION).
 		BuildParam("channel", "tiktok_web").
 		BuildParam("cookie_enabled", "true").
 		BuildParam("count", "20").
+		BuildParam("current_region", "JP").
 		BuildParam("cursor", cursor).
 		BuildParam("data_collection_enabled", "true").
 		BuildParam("device_id", "7468501464287299079").
@@ -38,6 +40,7 @@ func BuildCommentRoute(ctx context.Context, msToken, awemeId, cursor string) (st
 		BuildParam("focus_state", "false").
 		BuildParam("fromWeb", "1").
 		BuildParam("from_page", "video").
+		BuildParam("history_len", "3").
 		BuildParam("is_fullscreen", "false").
 		BuildParam("is_non_personalized", "false").
 		BuildParam("is_page_visible", "true").
