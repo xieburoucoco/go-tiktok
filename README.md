@@ -210,17 +210,23 @@ func TestSearch(t *testing.T) {
     1. 打开浏览器，访问 `https://www.tiktok.com`。
     2. 按 F12 打开开发者工具，转到「Application」标签。
     3. 在Filter输入msToken进行过滤，找到msToken值，复制下来即可。
-![img_1.png](img_1.png)
+---
+![img_1.png](doc/img/img_1.png)
+---
 ### 2. `ttwid`
 - **步骤**：
     1. 同上。
-    ![img_2.png](img_2.png)
+---
+![img_2.png](doc/img/img_2.png)
+---
 ### 3. `secUid`
 - **步骤**：
     1. 访问目标用户主页（如 `https://www.tiktok.com/@gemdzq`）。
     2. 查看页面源代码（Ctrl+U），搜索 `secUid`。
     3. 找到类似 `"secUid": "MS4wLjABAAAAxxx"` 的字段，复制引号中的值。
-    ![img_3.png](img_3.png)
+---
+![img_3.png](doc/img/img_3.png)
+---
     4. 如果没有找到 `secUid`，可以通过api.Home接口输入uniqueId来获取secUid。
 ### 4. `uniqueId`
 - **步骤**：
