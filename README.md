@@ -1,8 +1,10 @@
-以下是根据你的项目结构和测试用例生成的 `README.md` 文件，结构清晰，内容简洁，符合你的要求。
 
----
-
-# Go-TikTok SDK
+<!-- 动态打字效果 -->
+<h1 align="center">
+  <a href="https://sunguoqi.com/">
+    <img src="https://readme-typing-svg.herokuapp.com?font=Merriweather&size=40&color=2958F7&center=true&multiline=true&width=600&height=60&lines=go-tiktok">
+  </a>
+</h1>
 
 一个开源的 TikTok 平台 SDK，使用 Go 语言开发，支持获取用户详情、视频元数据、音乐信息、搜索以及评论等功能。
 
