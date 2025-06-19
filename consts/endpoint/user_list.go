@@ -23,7 +23,17 @@ func GetUserListRoute() string {
 	return consts.API_ENDPOINT + "user/list/"
 }
 
-func BuildUserListRoute() string {
+func BuildUserListRoute(scene SceneType, secUid, maxCursor, minCursor string) (string, error) {
+	if len(secUid) == 0 {
+		return "", fmt.Errorf("secUid is empty")
+	}
+	if len(maxCursor) == 0 {
+		maxCursor = "0"
+	}
+	if len(minCursor) == 0 {
+		return "", fmt.Errorf("minCursor is empty")
+	}
+
 	buildUrl := GetUserListRoute() + "?"
 	startUrl := buildUrl
 	addAndConcatParam := func(key string, value string) {
@@ -57,20 +67,20 @@ func BuildUserListRoute() string {
 	addAndConcatParam("is_fullscreen", "false")
 	addAndConcatParam("is_page_visible", "true")
 
-	addAndConcatParam("maxCursor", "0")
-	addAndConcatParam("minCursor", "1744521427")
+	addAndConcatParam("maxCursor", maxCursor)
+	addAndConcatParam("minCursor", minCursor)
 
 	addAndConcatParam("os", "windows")
 	addAndConcatParam("priority_region", "")
 	addAndConcatParam("referer", "")
 	addAndConcatParam("region", "US")
-	addAndConcatParam("scene", "67")
+	addAndConcatParam("scene", string(scene))
 	addAndConcatParam("screen_height", "1152")
 	addAndConcatParam("screen_width", "2048")
-	addAndConcatParam("secUid", "MS4wLjABAAAADWVixuGqt-G8FDQ9yx9TLQD-4fFpwQtBhXe6EDCJ32wiprPkgzEzdGCjCR1PEwmf")
+	addAndConcatParam("secUid", secUid)
 	addAndConcatParam("tz_name", "Asia/Shanghai")
 	addAndConcatParam("webcast_language", "zh-Hans")
-	return buildUrl
+	return buildUrl, nil
 }
 
 func GetUserListParams(scene SceneType, secUid, maxCursor, minCursor string) (map[string]interface{}, error) {
@@ -84,22 +94,19 @@ func GetUserListParams(scene SceneType, secUid, maxCursor, minCursor string) (ma
 	if len(minCursor) == 0 {
 		minCursor = "0"
 	}
-	//params["scene"] = scene
-	//params["secUid"] = secUid
+	params["scene"] = scene
+	params["secUid"] = secUid
 	//params["count"] = "30"
-	//params["maxCursor"] = maxCursor
-	//params["minCursor"] = minCursor
+	params["maxCursor"] = maxCursor
+	params["minCursor"] = minCursor
 	return params, nil
 }
 
 func BuildUserListEndpoint(scene SceneType, secUid, maxCursor, minCursor string) (consts.HTTPMethodType, string, map[string]interface{}, map[string]interface{}, UserListRes, error) {
 	res := UserListRes{}
 	cookies := make(map[string]interface{})
-	params, err := GetUserListParams(scene, secUid, maxCursor, minCursor)
-	if err != nil {
-		return USER_LIST_METHOD, GetUserListRoute(), params, cookies, res, err
-	}
-	return USER_LIST_METHOD, BuildUserListRoute(), params, cookies, res, nil
+	route, err := BuildUserListRoute(scene, secUid, maxCursor, minCursor)
+	return USER_LIST_METHOD, route, make(map[string]interface{}), cookies, res, err
 }
 
 type UserListRes struct {
